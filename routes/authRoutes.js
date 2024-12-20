@@ -3,6 +3,7 @@ import {
   registerUser,
   verifyEmail,
   loginUser,
+  getProfileDetails,
  
 } from '../controllers/authController.js';
 
@@ -14,6 +15,8 @@ router.post('/register', registerUser);
 router.get('/verifyEmail/:verify_token', verifyEmail);
 // Login User
 router.post('/login', loginUser);
+// Get Profile Details
+router.get("/profile",getProfileDetails)
 
 
 

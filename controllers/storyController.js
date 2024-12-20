@@ -23,6 +23,25 @@ export const createStory = async (req, res) => {
   }
 };
 
+// Get a single story by ID
+export const getStoryById = async (req, res) => {
+  const { storyId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const story = await Story.findOne({ _id: storyId, author: userId });
+
+    if (!story) {
+      return res.status(404).json({ message: "Story not found or you're not the author." });
+    }
+
+    return res.status(200).json(story);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching story", error });
+  }
+};
+
+
 // Edit a story (Author only)
 export const editStory = async (req, res) => {
   const { storyId } = req.params;
@@ -96,17 +115,30 @@ export const publishStory = async (req, res) => {
   }
 };
 
+// Get stories of the logged-in author
+export const getMyStories = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const stories = await Story.find({ author: userId });
+    return res.status(200).json({ stories });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching stories', error });
+  }
+};
 // Get all stories
 export const getAllStories = async (req, res, next) => {
   try {
-    const stories = await Story.find().populate('author', 'name email'); 
-    
+    const stories = await Story.find({ published: true }).populate('author', 'name email');
+    console.log("Fetched stories:", stories); // Log the fetched stories
+
     if (!stories || stories.length === 0) {
       return res.status(404).json({ message: "No stories found." });
     }
-    
+
     return res.status(200).json(stories);
   } catch (error) {
+    console.error("Error fetching stories:", error); 
     return next(error);
   }
 };

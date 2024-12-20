@@ -161,5 +161,40 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+// Get profile details
+const getProfileDetails = async (req, res, next) => {
+  try {
+    // Get the token from the Authorization header
+    const token = req.headers.authorization?.split(' ')[1]; // Assuming 'Bearer token' format
 
-export{ registerUser, verifyEmail, loginUser };
+    if (!token) {
+      const err = new Error("No token provided. Please log in.");
+      err.statusCode = 401;
+      return next(err);
+    }
+
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Fetch user details using the userId from the decoded token
+    const user = await User.findById(decoded.userId);
+    
+    if (!user) {
+      const err = new Error("User not found");
+      err.statusCode = 404;
+      return next(err);
+    }
+
+    // Return user details
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      verified: user.verified,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+export{ registerUser, verifyEmail, loginUser, getProfileDetails };
