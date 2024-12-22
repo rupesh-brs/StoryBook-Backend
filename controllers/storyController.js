@@ -194,9 +194,10 @@ export const likeStory = async (req, res) => {
 
     return res.status(200).json({ message: "Story liked successfully.", story });
   } catch (error) {
-    return res.status(500).json({ message: "Error liking story", error });
+    return res.status(500).json({ message: "Only Single Like is allowed!", error });
   }
 };
+
 
 
 // Comment on a story
