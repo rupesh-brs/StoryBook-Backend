@@ -13,7 +13,8 @@ const app = express();
 dotenv.config();
 
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:3000' }));
+// app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'https://storybook-frontend.onrender.com' }));
 app.use(express.json());
 
 // Routes
